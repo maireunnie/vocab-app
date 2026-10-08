@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>문학 속 어휘 발견</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f6fb;--cd:#fff;--tx:#1b2232;--mu:#5d667a;--pr:#3556d8;--pt:#fff;--ok:#dff5e3;--no:#fde4dc;--bd:#d6dcea;--hl:#fff3bf}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10131c;--cd:#1b2030;--tx:#e8ebf5;--mu:#9ba4ba;--pr:#7d93ff;--pt:#10131c;--ok:#1d3a26;--no:#47241b;--bd:#2c3348;--hl:#4a4116}}
+:root[data-theme="dark"]{--bg:#10131c;--cd:#1b2030;--tx:#e8ebf5;--mu:#9ba4ba;--pr:#7d93ff;--pt:#10131c;--ok:#1d3a26;--no:#47241b;--bd:#2c3348;--hl:#4a4116}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:17px/1.7 "Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif}
+main{max-width:640px;margin:0 auto;padding:12px 16px 40px}
+header{display:flex;justify-content:space-between;align-items:center}
+h1{font-size:1.3em;margin:.2em 0}h2,h3{margin:.2em 0}
+button{font:inherit;cursor:pointer;border:1px solid var(--bd);background:var(--cd);color:var(--tx);border-radius:12px;padding:8px 14px;min-height:48px;margin:4px 4px 4px 0}
+.p{background:var(--pr);color:var(--pt);border-color:var(--pr)}
+.o{display:block;width:100%;text-align:left}
+.o.good{background:var(--ok)}.o.bad{background:var(--no)}.o:disabled{opacity:.5}
+.wd{min-height:0;padding:0 6px;margin:0;background:var(--hl);border-radius:8px}.wd.ok{background:var(--ok)}
+.c{background:var(--cd);border:1px solid var(--bd);border-radius:16px;padding:16px;margin:12px 0}
+.pg{font-size:1.1em;line-height:2.1}
+mark{background:var(--hl);color:inherit;padding:0 4px;border-radius:4px}
+.hint{background:var(--hl);padding:8px 12px;border-radius:10px;margin:8px 0}
+.mu{color:var(--mu);font-size:.9em}
+input,select{font:inherit;width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);margin:4px 0 12px}
+.sc{overflow-x:auto}table{border-collapse:collapse;font-size:.85em}td,th{border:1px solid var(--bd);padding:4px 8px;white-space:nowrap}
+textarea{width:100%;height:90px;background:var(--bg);color:var(--tx)}
+.fx{font-size:1.3em;font-weight:700;animation:pop .5s}
+@keyframes pop{0%{transform:scale(.5);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+</style></head><body><main id="app"></main>
+<script>
+const P=["전학 첫날, 민수는 교실 문 앞에서 머뭇거렸다.","모든 것이 낯설었고, 아이들의 시선이 따갑게 느껴졌다.","선생님이 갑자기 자기소개를 시키자 민수는 어리둥절했다.","무슨 말부터 해야 할지 막막했다.","그때 짝이 작은 목소리로 “천천히 해도 돼.”라고 말해 주었다.","민수는 숨을 크게 쉬고 이름을 말했다.","끝까지 말을 해내자 민수는 가슴이 뿌듯했다."];
+const W=[
+{b:'머뭇거리다',f:'머뭇거렸다',s:0,c:1,e:'🚪',ch:'ㅁㅁㄱㄹㄷ',en:'to hesitate',mean:'망설이며 선뜻 행동하지 못하다',o:['망설이며 선뜻 행동하지 못하다','큰 소리로 노래하다','빠르게 달려가다'],col:'대답을 머뭇거리다, 머뭇거리며 말하다',sim:'망설이다와 비슷해요. 망설이다는 마음을 정하지 못한 것이고, 머뭇거리다는 말이나 행동이 멈칫하는 모습까지 말해요.',r:{q:"'머뭇거리다'와 함께 쓸 수 있는 말은?",o:['대답을 머뭇거리다','밥을 머뭇거리다','책을 머뭇거리다'],a:0},u:'발표를 하라고 했지만 나는 손도 못 들고 ___.',d:['뿌듯하다','낯설다']},
+{b:'낯설다',f:'낯설었고',s:1,c:0,e:'🏙️',ch:'ㄴㅅㄷ',en:'unfamiliar, strange',mean:'처음 보거나 익숙하지 않다',o:['처음 보거나 익숙하지 않다','아주 크고 넓다','값이 비싸다'],col:'낯선 곳, 낯선 얼굴, 낯설게 느껴지다',sim:'생소하다와 비슷해요. 낯설다는 사람, 장소, 느낌에 두루 쓰고 일상에서 더 자주 써요.',r:{q:"'낯설다'와 반대되는 말은?",o:['익숙하다','어렵다','넓다'],a:0},u:'한 번도 본 적 없는 거리라서 ___ 풍경이었다.',d:['뿌듯하다','머뭇거리다']},
+{b:'어리둥절하다',f:'어리둥절했다',s:2,c:2,e:'😮',ch:'ㅇㄹㄷㅈㅎㄷ',en:'confused, bewildered',mean:'무슨 일인지 몰라 멍하다',o:['무슨 일인지 몰라 멍하다','몹시 화가 나다','기운이 없어 힘들다'],col:'어리둥절한 표정, 어리둥절해하다',sim:'당황하다와 비슷해요. 당황하다는 놀라서 허둥대는 것이고, 어리둥절하다는 상황을 몰라서 멍한 것이에요.',r:{q:"'어리둥절하다'와 가장 가까운 상황은?",o:['무슨 일인지 몰라 멍하다','일이 잘 풀려 기쁘다','힘이 없어 쓰러질 것 같다'],a:0},u:'갑자기 모두가 박수를 치자 나는 왜 그러는지 몰라 ___.',d:['뿌듯하다','머뭇거리다']},
+{b:'막막하다',f:'막막했다',s:3,c:3,e:'🌫️',ch:'ㅁㅁㅎㄷ',en:'at a loss, hopeless about what to do',mean:'앞으로 어떻게 해야 할지 몰라 답답하다',o:['앞으로 어떻게 해야 할지 몰라 답답하다','아주 조용하고 쓸쓸하다','몹시 기쁘고 신나다'],col:'앞길이 막막하다, 막막한 마음',sim:'답답하다와 비슷해요. 막막하다는 앞으로 할 일이 보이지 않을 때 써요.',r:{q:"'막막하다'와 함께 쓸 수 있는 말은?",o:['앞길이 막막하다','밥이 막막하다','공이 막막하다'],a:0},u:'숙제가 너무 어려워서 어디서부터 시작해야 할지 ___.',d:['뿌듯하다','낯설다']},
+{b:'뿌듯하다',f:'뿌듯했다',s:6,c:6,e:'😊',ch:'ㅃㄷㅎㄷ',en:'proud and fulfilled',mean:'무언가를 해내어 마음이 가득 차고 기쁘다',o:['무언가를 해내어 마음이 가득 차고 기쁘다','몹시 배가 고프다','일이 많아 정신이 없다'],col:'가슴이 뿌듯하다, 뿌듯해하다',sim:'기쁘다와 비슷해요. 뿌듯하다는 무언가를 해낸 뒤에 느끼는 기쁨이에요.',r:{q:"'뿌듯하다'와 함께 쓸 수 있는 말은?",o:['가슴이 뿌듯하다','다리가 뿌듯하다','신발이 뿌듯하다'],a:0},u:'오랫동안 준비한 발표를 잘 끝내서 마음이 ___.',d:['막막하다','어리둥절하다']}];
+const $=s=>document.querySelector(s);
+const E=s=>String(s).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sh=a=>[...a].sort(()=>Math.random()-.5);
+let S={view:'start',name:'',lang:'ko',slow:false,q:null,card:null,tok:0,pm:'',rc:0},mem=[];
+const ld=()=>{try{return JSON.parse(localStorage.getItem('vl')||'[]')}catch(e){return mem}};
+const sv=a=>{mem=a;try{localStorage.setItem('vl',JSON.stringify(a))}catch(e){}};
+const J=r=>r.att>1||r.hint>2?'지원 필요':r.hint==0?'숙달':'발달 중';
+function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='ko-KR';u.rate=S.slow?.7:1;speechSynthesis.speak(u)}catch(e){}}
+function R(){const v=S.view;$('#app').innerHTML=hdr()+(v=='start'?start():v=='read'?read():v=='quest'?quest():teacher())}
+function H0(){S.view='start';S.q=null;R()}
+function SP(){S.slow=!S.slow;R()}
+const hdr=()=>`<header><b>📖 어휘 발견</b><span><button onclick="SP()">🐢 ${S.slow?'0.7배':'1.0배'}</button>${S.view=='start'?'':'<button onclick="H0()">🏠</button>'}</span></header>`;
+const start=()=>`<section class=c><h1>글 속 낯선 낱말, 스스로 알아내요</h1><p class=mu>짧은 글을 읽고, 앞뒤 내용(문맥)에서 낱말의 뜻을 찾아봐요. 기록은 이 기기에만 저장돼요.</p><label>이름<input id=nm value="${E(S.name)}" placeholder="이름 또는 별명"></label><label>도움말 언어<select id=lg><option value=ko>한국어만</option><option value=en ${S.lang=='en'?'selected':''}>English</option></select></label><button class=p onclick="go()">시작하기</button></section><button onclick="S.view='teacher';R()">교사 화면</button>`;
+function go(){S.name=$('#nm').value.trim()||'학생';S.lang=$('#lg').value;S.view='read';R()}
+const cardIn=w=>`<h3>${w.b} ${w.e}</h3><p><b>쉬운 뜻</b> ${w.mean}</p><p><b>글 속 문장</b> ${P[w.s]}</p><p><b>함께 쓰는 표현</b> ${w.col}</p><p><b>비슷한 말과 차이</b> ${w.sim}</p>${S.lang=='en'?`<details><summary>English</summary>${w.en}</details>`:''}<button onclick="say('${w.b}. ${w.mean}')">🔊 듣기</button>`;
+function read(){const dn=new Set(ld().filter(r=>r.n==S.name).map(r=>r.w));
+const t=P.map((s,i)=>{W.forEach((w,k)=>{if(w.s==i)s=s.replace(w.f,`<button class="wd ${dn.has(w.b)?'ok':''}" onclick="Q(${k})">${dn.has(w.b)?'⭐':'❓'}${w.f}</button>`)});return s}).join(' ');
+return `<section class=c><h2>오늘의 글</h2><p class=pg>${t}</p><button onclick="say(P.join(' '))">🔊 글 듣기</button><p class=mu>❓ 낱말을 눌러 뜻을 알아내 보세요. 오늘의 발견 ${dn.size}/${W.length}</p></section><section class=c><h3>내 어휘 서재</h3>${dn.size?W.map((w,k)=>dn.has(w.b)?`<button onclick="S.card=${k};R()">⭐ ${w.b}</button>`:'').join(''):'<p class=mu>아직 비어 있어요.</p>'}</section>${S.card!=null?`<section class=c>${cardIn(W[S.card])}</section>`:''}`}
+function Q(k){S.q={k,step:0,hint:0,att:1,t0:Date.now(),o:sh(W[k].o),rm:[],msg:'',clue:true,rel:false,use:false,sel:null};S.view='quest';S.card=null;R();scrollTo(0,0)}
+function MC(opts,ans){const s=S.q.sel;return opts.map((o,i)=>`<button class="o ${s==null?'':o==ans?'good':i==s?'bad':''}" ${s!=null?'disabled':''} onclick="B(${i})">${o}</button>`).join('')+(s!=null?'<button class=p onclick="N()">다음</button>':'')}
+function quest(){const q=S.q,w=W[q.k],st=q.step;let h=`<section class=c><div class=mu>${['뜻 추측하기','단서 찾기','뜻 확인','어휘 관계','새 문장에서 쓰기','오늘의 기분'][st]} (${st+1}/6)</div>`;
+if(st==0){h+=`<p class=pg>${P[w.s].replace(w.f,`<mark>${w.f}</mark>`)}</p><p><b>${w.f}</b>의 뜻은 무엇일까요?</p>`;
+if(q.hint>0)h+=`<div class=hint>💡 단서 문장: ${P[w.c]}</div>`;
+if(q.hint>1)h+='<div class=hint>✂️ 보기 하나를 지웠어요.</div>';
+if(q.hint>2)h+=`<div class=hint>🔤 ${w.ch} ${w.e}</div>`;
+h+=q.o.map((o,i)=>`<button class=o ${q.rm.includes(o)?'disabled':''} onclick="A0(${i})">${o}</button>`).join('');
+if(q.msg)h+=`<p class=mu>${q.msg}</p>`;
+if(q.hint<3)h+=`<button onclick="H()">💡 힌트 보기 (${q.hint}/3)</button>`}
+else if(st==1)h+=`<div class=fx>✨ 맞아요! 스스로 알아냈어요</div><p>뜻을 알아내는 데 도움이 된 문장은 어느 것일까요?</p>`+q.co.map((x,i)=>`<button class=o onclick="A1(${i})">${P[x]}</button>`).join('');
+else if(st==2)h+=`<div class=fx>⭐ 내 어휘 서재에 담겼어요</div>${q.clue?'':`<p class=mu>단서는 이 문장이었어요: ${P[w.c]}</p>`}${cardIn(w)}<br><button class=p onclick="N()">다음</button>`;
+else if(st==3)h+=`<p>${w.r.q}</p>`+MC(q.ro,w.r.o[w.r.a]);
+else if(st==4)h+=`<p>빈칸에 알맞은 낱말은?</p><p class=pg>${w.u}</p>`+MC(q.uo,w.b);
+else h+='<p>이 낱말을 배운 기분은?</p>'+['😀','😐','😟'].map(m=>`<button onclick="F('${m}')">${m}</button>`).join('');
+return h+'</section>'}
+function H(){const q=S.q,w=W[q.k];if(q.hint<3){q.hint++;if(q.hint==2){const x=q.o.find(o=>o!=w.mean&&!q.rm.includes(o));if(x)q.rm.push(x)}}R()}
+function A0(i){const q=S.q,w=W[q.k],o=q.o[i];if(o==w.mean){q.msg='';q.step=1;q.co=sh([w.c,...sh(P.map((_,x)=>x).filter(x=>x!=w.c)).slice(0,2)])}else{q.att++;q.rm.push(o);q.msg='괜찮아요. 다시 생각해 보거나 힌트를 눌러 보세요.'}R()}
+function A1(i){const q=S.q;q.clue=q.co[i]==W[q.k].c;N()}
+function B(i){const q=S.q,w=W[q.k];q.sel=i;if(q.step==3)q.rel=q.ro[i]==w.r.o[w.r.a];else q.use=q.uo[i]==w.b;R()}
+function N(){const q=S.q,w=W[q.k];q.step++;q.sel=null;if(q.step==3)q.ro=sh(w.r.o);if(q.step==4)q.uo=sh([w.b,...w.d]);R();scrollTo(0,0)}
+function F(m){const q=S.q,w=W[q.k],a=ld();a.push({n:S.name,w:w.b,hint:q.hint,att:q.att,clue:q.clue,rel:q.rel,use:q.use,sec:Math.round((Date.now()-q.t0)/1000),lang:S.lang,slow:S.slow,mood:m,d:new Date().toISOString().slice(0,10)});sv(a);S.q=null;S.view='read';R()}
+function PIN(){if($('#pin').value=='1234'){S.tok=1;S.pm=''}else S.pm='PIN이 맞지 않아요.';R()}
+function RS(){if(S.rc){sv([]);S.rc=0}else S.rc=1;R()}
+function teacher(){if(!S.tok)return `<section class=c><h2>교사 화면</h2><input id=pin type=password inputmode=numeric placeholder="PIN (예시: 1234)"><button class=p onclick="PIN()">들어가기</button><p class=mu>${S.pm}</p></section>`;
+const a=ld(),st={},hd={};a.forEach(r=>{const j=J(r);st[r.n]=st[r.n]||{'숙달':0,'발달 중':0,'지원 필요':0};st[r.n][j]++;if(j=='지원 필요')hd[r.w]=(hd[r.w]||0)+1});
+const csv=['학생,낱말,판정,힌트단계,시도,단서,관계,활용,도움말언어,천천히듣기,기분,날짜',...a.map(r=>[String(r.n).replace(/,/g,' '),r.w,J(r),r.hint,r.att,r.clue,r.rel,r.use,r.lang,r.slow,r.mood,r.d].join(','))].join('\n');
+const tb=(h,rows)=>`<div class=sc><table><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(x=>`<td>${E(x)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+return `<section class=c><h2>교사 화면</h2><p class=mu>이 기기에 저장된 기록만 보여요. 판정: 힌트 없이 정답=숙달, 힌트 1~2단계=발달 중, 힌트 3단계 또는 오답=지원 필요</p><h3>학생별 요약</h3>${a.length?tb(['학생','숙달','발달 중','지원 필요'],Object.entries(st).map(([n,v])=>[n,v['숙달'],v['발달 중'],v['지원 필요']])):'<p class=mu>기록이 없어요.</p>'}<h3>어려워한 낱말</h3>${Object.keys(hd).length?tb(['낱말','지원 필요 횟수'],Object.entries(hd).sort((x,y)=>y[1]-x[1])):'<p class=mu>아직 없어요.</p>'}<h3>전체 기록</h3>${tb(['학생','낱말','판정','힌트','시도','단서','관계','활용','언어','기분','날짜'],a.map(r=>[r.n,r.w,J(r),r.hint,r.att,r.clue?'O':'X',r.rel?'O':'X',r.use?'O':'X',r.lang,r.mood,r.d]))}<h3>CSV (복사해서 붙여넣기)</h3><textarea id=csv readonly>${E(csv)}</textarea><button onclick="const t=$('#csv');t.select();document.execCommand('copy')">복사</button><button onclick="RS()">${S.rc?'정말 모두 지울까요? 한 번 더 누르기':'기록 지우기'}</button></section>`}
+R();
+</script></body></html>
